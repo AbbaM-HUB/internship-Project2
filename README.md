@@ -26,19 +26,22 @@ The application uses a **Durable Object** to maintain a "Single Source of Truth.
 ## setup & Deployment
 1. Frontend (Client)
 2. Clone & Install:
+3. npm install
 
-## Bash
-1. npm install
-2. Environment Variables: Create a .env file:
+   
+## Environment Variables: 
+Create a .env file:
 
 ## Extrait de code
 1. VITE_SUPABASE_URL=your_project_url
 2. VITE_SUPABASE_ANON_KEY=your_anon_key
    
-## Run: npm run dev
+## Run: 
+npm run dev
 
 ## Backend (Serverless)
-Initialize Queues/KV: (If using KV for profiles) npx wrangler kv:namespace create PROFILES.
+Initialize Queues/KV: (If using KV for profiles) 
+npx wrangler kv:namespace create PROFILES.
 
 
 ## Deploy:
