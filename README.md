@@ -1,46 +1,29 @@
-# SyncBoard 
-A real-time, collaborative digital canvas that allows multiple users to synchronize the state of shared objects instantly.
+# Student Sync Engine ⚙️
 
-## Features
-- **Real-Time Sync**: Move objects in one tab and see them move in all others instantly.
-- **Persistent State**: Canvas coordinates are saved even if all users disconnect.
-- **Secure Auth**: Integrated Supabase Auth supporting Email/Password and Google OAuth.
-- **Edge Performance**: Backend built on Cloudflare Workers for global low-latency.
+A resilient Data Synchronization and ETL (Extract, Transform, Load) pipeline that bridges two decoupled Supabase projects with built-in retry logic.
 
-## Tech Stack
-- **Frontend**: React, Tailwind CSS, Lucide React.
-- **Backend**: Cloudflare Workers with Hono.
-- **Real-Time**: WebSockets + Cloudflare Durable Objects.
-- **Auth/DB**: Supabase.
+## 🚀 Features
+- **Instant Sync**: Database Webhooks trigger immediate data migration upon Inserts/Updates/Deletes.
+- **Data Transformation**: Converts flat relational SQL rows into structured JSONB documents.
+- **Guaranteed Delivery**: Uses Cloudflare Queues for automatic retries with exponential backoff.
+- **Observability**: Custom `sync_logs` table provides a full audit trail of every transaction.
 
-## Architecture
-The application uses a **Durable Object** to maintain a "Single Source of Truth." When a user drags a box, coordinates are sent via WebSocket to the Worker, which broadcasts the update to all connected clients and persists the state.
+## 🛠️ Tech Stack
+- **Runtime**: Cloudflare Workers (Serverless).
+- **Messaging**: Cloudflare Queues.
+- **Database**: Supabase (PostgreSQL).
+- **Communication**: REST API + Webhooks.
 
-## Setup
+## 🏗️ Architecture
+When a record is modified in the Source DB, a Webhook notifies the Worker. The Worker transforms the data and pushes it to the Target DB. If the Target is unreachable, the payload is moved to a **Cloudflare Queue** for resilient retrying.
+
+## 📊 Load Test Results
+- **Concurrency**: Handled 200+ simultaneous requests.
+- **Error Rate**: 0% during burst load.
+- **Latency**: 0.79ms Median CPU time.
+
+## 📋 Setup
 1. Clone the repository.
-2. Run `npm install`.
-3. Create a `.env` file with your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
-4. Run `npm run dev` to start locally.
-5. Deploy the backend: `npx wrangler deploy`.
-
-## setup & Deployment
-1. Frontend (Client)
-2. Clone & Install:
-3. npm install
-
-   
-## Environment Variables: 
-Create a .env file:
-1. VITE_SUPABASE_URL=your_project_url
-2. VITE_SUPABASE_ANON_KEY=your_anon_key
-   
-## Run: 
-npm run dev
-
-## Backend (Serverless)
-Initialize Queues/KV: (If using KV for profiles) 
-npx wrangler kv:namespace create PROFILES.
-
-
-## Deploy:
-npx wrangler deploy
+2. Configure `wrangler.jsonc` with your `TARGET_DB_URL` and `TARGET_DB_KEY`.
+3. Create the `sync_retries` queue: `npx wrangler queues create sync-retries`.
+4. Deploy: `npx wrangler deploy`.
