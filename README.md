@@ -25,7 +25,7 @@ The application uses a **Durable Object** to maintain a "Single Source of Truth.
 
 ## setup & Deployment
 1. Frontend (Client)
-2.Clone & Install:
+2. Clone & Install:
 
 ## Bash
 1. npm install
