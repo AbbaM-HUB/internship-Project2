@@ -41,5 +41,4 @@ The application uses a **Durable Object** to maintain a "Single Source of Truth.
 Initialize Queues/KV: (If using KV for profiles) npx wrangler kv:namespace create PROFILES.
 
 ## Deploy:
-Bash
 npx wrangler deploy
