@@ -31,8 +31,6 @@ The application uses a **Durable Object** to maintain a "Single Source of Truth.
    
 ## Environment Variables: 
 Create a .env file:
-
-## Extrait de code
 1. VITE_SUPABASE_URL=your_project_url
 2. VITE_SUPABASE_ANON_KEY=your_anon_key
    
