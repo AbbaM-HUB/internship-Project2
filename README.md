@@ -1,4 +1,45 @@
-SyncBoard 🎨A high-performance, real-time collaborative canvas built with a "Multiplayer-First" mindset. This project demonstrates how to synchronize global state across distributed users with sub-50ms latency.🚀 Key Features1. Real-Time "Multiplayer" SynchronizationInstant Interaction: Move the "Shared Box" in one browser window, and it moves in every other connected session instantly without page refreshes.WebSocket Engine: Built on a bidirectional communication layer that broadcasts coordinates $(x, y)$ the moment a user interacts with the canvas.2. Persistent "Single Source of Truth"Survival Logic: Unlike standard WebSockets that lose data when a server restarts, this uses Cloudflare Durable Objects.State Retention: If all users log out and return later, the box remains exactly where it was last placed.3. Dual-Method AuthenticationSocial & Standard: Full integration with Supabase Auth, supporting both traditional Email/Password and Google OAuth (Gmail).Recovery Flow: Includes a dedicated password reset and update UI to handle "Recovery" events gracefully without getting stuck in a login loop.4. Edge-Optimized BackendHono Framework: Uses the ultra-lightweight Hono framework running on Cloudflare Workers.Global Low Latency: Code is executed at the "Edge" (closest to the user), minimizing the physical distance data travels.🛠️ Tech StackFrontend: React (Vite), Tailwind CSS (UI/UX), Lucide React (Icons).Real-Time Layer: WebSockets + Cloudflare Durable Objects.API Framework: Hono (Serverless).Backend/Auth: Supabase (PostgreSQL).Caching: Cloudflare KV for rapid user profile lookups.🏗️ Architecture Detail (The "Under the Hood")The Data FlowInteraction: A user drags the box via react-draggable.Transmission: The client sends a JSON payload { type: "move", x, y } through the WebSocket.Processing: The Cloudflare Worker intercepts the message. It verifies the user's JWT (JSON Web Token) to ensure they are authorized.Broadcast: The Durable Object updates its internal memory and immediately pushes the new coordinates to all other active WebSocket connections.Solving ChallengesThe Redirect Loop: We fixed the Google Auth 500 error by correctly whitelisting the Redirect URI in Google Cloud Console and setting up the "Skip Nonce" toggle in Supabase.Recovery UI: We implemented onAuthStateChange listeners to detect PASSWORD_RECOVERY events, allowing the app to switch into a "New Password" mode automatically upon clicking an email link.📋 Setup & DeploymentFrontend (Client)Clone & Install:Bashnpm install
-Environment Variables: Create a .env file:Extrait de codeVITE_SUPABASE_URL=your_project_url
-VITE_SUPABASE_ANON_KEY=your_anon_key
-Run: npm run devBackend (Serverless)Initialize Queues/KV: (If using KV for profiles) npx wrangler kv:namespace create PROFILES.Deploy:Bashnpx wrangler deploy
+# SyncBoard 
+A real-time, collaborative digital canvas that allows multiple users to synchronize the state of shared objects instantly.
+
+## Features
+- **Real-Time Sync**: Move objects in one tab and see them move in all others instantly.
+- **Persistent State**: Canvas coordinates are saved even if all users disconnect.
+- **Secure Auth**: Integrated Supabase Auth supporting Email/Password and Google OAuth.
+- **Edge Performance**: Backend built on Cloudflare Workers for global low-latency.
+
+## Tech Stack
+- **Frontend**: React, Tailwind CSS, Lucide React.
+- **Backend**: Cloudflare Workers with Hono.
+- **Real-Time**: WebSockets + Cloudflare Durable Objects.
+- **Auth/DB**: Supabase.
+
+## Architecture
+The application uses a **Durable Object** to maintain a "Single Source of Truth." When a user drags a box, coordinates are sent via WebSocket to the Worker, which broadcasts the update to all connected clients and persists the state.
+
+## Setup
+1. Clone the repository.
+2. Run `npm install`.
+3. Create a `.env` file with your `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+4. Run `npm run dev` to start locally.
+5. Deploy the backend: `npx wrangler deploy`.
+
+## setup & Deployment
+1. Frontend (Client)
+2.Clone & Install:
+
+## Bash
+1. npm install
+2. Environment Variables: Create a .env file:
+
+## Extrait de code
+1. VITE_SUPABASE_URL=your_project_url
+2. VITE_SUPABASE_ANON_KEY=your_anon_key
+   
+## Run: npm run dev
+
+## Backend (Serverless)
+Initialize Queues/KV: (If using KV for profiles) npx wrangler kv:namespace create PROFILES.
+
+## Deploy:
+## Bash
+npx wrangler deploy
